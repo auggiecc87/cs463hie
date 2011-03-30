@@ -14,8 +14,8 @@ switch($display)
     break; 
    
 
-    case "panel";
-    include("$serverroot/mods/house_control.php");
+    case "Data";
+    include("$serverroot/mods/parser.php");
     break; 
 
     case "login";
@@ -29,6 +29,7 @@ switch($display)
     case "logout";
     include("$serverroot/mods/logout.php");
     break; 
+
     
 Default;
 include("$serverroot/mods/main_page.php");

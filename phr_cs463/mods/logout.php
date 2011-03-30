@@ -1,8 +1,7 @@
 <?php
-if($_SESSION['VALID']== 1)
+if($_SESSION['loggedin']== 1)
 {
-$uname = $_SESSION['USERNAME'];
-echo "<p>$uname, you have been logged out of the system, have a good day</p>";
+echo "<p>You have been logged out of the system, have a good day</p>";
 session_destroy();
 }
 else
