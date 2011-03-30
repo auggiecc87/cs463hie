@@ -24,6 +24,7 @@ while($row = mysql_fetch_array($login_results))
         $_SESSION['dstore_uname']     = $row['dstore_uname'];
         $_SESSION['dstorepwd']        = $row['dstorepwd'];
         $_SESSION['loggedin']         = '1';
+        $_SESSION['iv']               = $row['iv'];
 
     }else
     { 
@@ -34,12 +35,97 @@ while($row = mysql_fetch_array($login_results))
 
 }
 
-echo  $_SESSION['session_pid_auth']; 
-echo  $_SESSION['first_name'];       
-echo  $_SESSION['last_name'];        
-echo  $_SESSION['PHR_ID'];           
-echo  $_SESSION['dstore_uname'];     
-echo  $_SESSION['dstorepwd'];        
+if($_SESSION['loggedin'] == 1)
+{
+    $datastore_server = "127.0.0.1:3307";
+    $datastoreuname = $_SESSION['dstore_uname'];
+    $datastorepass  = $_SESSION['dstorepwd'];
+    $PHR_DATASTORE = mysql_connect($datastore_server, $datastoreuname, $datastorepass);
+    $datastore_dbname ="Health Records";
+    if(!mysql_select_db($datastore_dbname, $PHR_DATASTORE))
+    {
+        echo "cant connect";
+    }
+
+
+    $encrypt_pid = $_SESSION['session_pid_auth'];
+    $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$encrypt_pid'";
+    $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
+    while($row = mysql_fetch_array($finalquery))
+    {
+        $Name  = $row['Name'];
+        $Sex   = $row['Sex'];
+        $DOB   = $row['DOB'];
+        $SSN   = $row['SSN'];
+        $Diag  = $row['Diagnosis'];
+        $Treat = $row['Treatment'];
+    }
+
+    $key   = $_SESSION['key'];
+    $cipher_alg = MCRYPT_RIJNDAEL_128;
+    //This is used to create a one time key
+    /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
+        MCRYPT_MODE_ECB), MCRYPT_RAND);*/
+    //echo bin2hex($iv);
+    //echo "<p>".$iv;
+
+    //Obtain IV that was generated
+    $iv = $_SESSION['iv'];
+    $iv = hex2bin($iv);
+
+    /*$input = "text";
+    $encrypted_string = mcrypt_encrypt($cipher_alg, $key, 
+        $input, MCRYPT_MODE_CBC, $iv);
+    echo "Encrypted string: ".bin2hex($encrypted_string)."<p>";
+     */
+    
+    //$encrypted_string = hex2bin($Name);
+    $Name = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Name), MCRYPT_MODE_CBC, $iv);
+    
+    $Sex = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+    
+    $DOB = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+    
+    $SSN = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
+    
+    $Diag = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+    
+    $Treat = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
+
+
+    echo "<p align='left'>
+        <strong>Name</strong>: $Name <br/>
+        <strong>Sex </strong>: $Sex<br/>
+        <strong>DOB </strong>: $DOB <br/>
+        <strong>SSN </strong>: $SSN <br/>
+        <strong>Diag</strong>: $Diag<br/>
+        <strong>Treat</strong>: $Treat <br/>";
+
+}
+
+
+
+//The iv is stored in hex in the database, we need to transform it back
+    //essentiall a bin2hex function
+
+
+    function hex2bin($hexvalue)
+    {
+        if (!is_string($hexvalue)) return null;
+        $bin='';
+        for ($a=0; $a<strlen($hexvalue); $a+=2) 
+        { 
+            $bin.=chr(hexdec($hexvalue{$a}.$hexvalue{($a+1)})); 
+        }
+        return $bin;
+    } 
+
 
 ?>
 
