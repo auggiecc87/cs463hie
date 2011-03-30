@@ -20,7 +20,7 @@ require_once("./lib/tools/libload.php");
 <html>
  <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-   <title>Health Care Login - PHRnet</title>
+   <title>Solar House Control</title>
     <link rel="shortcut icon" href="favicon.ico"/>
     <link href="css/main.css" rel="stylesheet" type="text/css"/>
  </head>

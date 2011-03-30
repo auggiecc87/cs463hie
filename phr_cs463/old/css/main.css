@@ -1,0 +1,279 @@
+/* CSS Document */
+
+/* global link styles */
+a:link {color: #444444; text-decoration: none} 
+a:active {color: #444444; text-decoration: none; }
+a:visited {color: #444444; text-decoration: none; }
+a:hover {color: #666666; text-decoration: none; }
+
+/*Main*/
+body
+{
+	background-color: #FFFFFF;
+}
+#maincontainer
+{
+        border-top: thin solid #000000;
+	text-align: left;
+	background-color: #FFFFFF;
+}
+#header
+{
+	padding: 40px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	background-color: #33CC00;
+	color: #FFFFFF;
+        word-spacing: 1px;
+        line-height: 30px;
+        font-size: 145%;
+	overflow: hidden;
+}
+#top_nav_bar
+{
+	padding: 3px;
+	float: left;
+	background-color: #FFFFFF;
+	text-align: left;
+        border-bottom: thin solid #000000;
+	width: 450px;
+}
+
+#footer
+{
+	padding: 2px;
+	-moz-border-radius: 20px;
+	border-radius: 10px;
+	background-color: #33CC00;
+	color: #FFFFFF;
+        word-spacing: 1px;
+        line-height: 20px;
+	overflow: hidden;
+}
+.white_bottom
+{
+	width: 94%;
+	margin-left: 3%;
+	margin-right: 3%;
+	height: 25px;
+	text-align: center;
+	float: right;
+	background-color: #FFFFFF;
+}
+.inframe
+{
+	background-color:  #FFFFFF;
+	width: 950px;
+	overflow: hidden;
+}
+.tempcolor
+{
+        border-top: thin solid #000000;
+	background-color:  #FFFFFF;
+	overflow: hidden;
+}
+/*text styles*/
+p
+{
+        text-indent: 1cm;
+        word-spacing: 1px;
+        line-height: 20px;
+        font-size: 85%;
+}
+/*front page*/
+.tbox1
+{
+	
+        border: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+	padding: 8px;
+        text-align: left;
+	width: 600px;
+	float: left;  
+}
+table.sidebox
+{
+
+        border-bottom: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+        padding: 8px;
+        width: 332px;
+        float: right;
+}
+td.sidebox
+{
+	border-bottom: 1px solid #FFFFFF;
+	background-color: #EEEEEE;
+	height: 50px;
+	padding: 8px;
+	text-align: left;
+
+
+}
+th.sidebox
+{
+	height: 40px;
+	font-size: 110%;
+
+}
+#mini_cal
+{
+	height: 100px;
+	float: right;
+        background-color: #FFFFFF;
+        padding: 8px;
+        width: 314px;
+        float: right;
+	overflow: hidden;
+
+}
+/*navigation*/
+#line_nav
+{
+	background-color: #DDDDDD;
+	height: 30px;
+	line-height: 30px;
+	padding: 1px;
+	border-bottom: solid;
+	border-top: solid;
+	word-spacing: 20px;
+	border-width: 1px;
+	overflow: hidden;
+
+}
+
+/*Form*/
+.inlog
+{
+        word-spacing: 1px;
+        line-height: 20px;
+        font-size: 85%;
+	background-color: #FFFFFF;
+	padding: 5px;
+	width: 300px;
+	height: 150px;
+	float: left;
+	overflow: hidden;
+}
+.register
+{
+        word-spacing: 1px;
+        line-height: 20px;
+        font-size: 85%;
+	background-color: #FFFFFF;
+	padding: 5px;
+	width: 300px;
+	float: left;
+	overflow: hidden;
+}
+.userstat
+{
+        word-spacing: 1px;
+        line-height: 20px;
+        font-size: 85%;
+	background-color: #FFFFFF;
+	padding: 5px;
+	width: 350px;
+	height: 25px;
+	text-align: center;
+	float: right;
+	overflow: hidden;
+}
+/*New Semester Title*/
+#nstitle
+{
+        word-spacing: 1px;
+        line-height: 40px;
+	font-family: arial;
+        font-size: 250%;
+	color: #FFFFFF;
+	padding-top: 25px;
+	width: 350px;
+	text-align: center;
+	float: left;
+	overflow: hidden;
+
+
+}
+.section_title
+
+{
+        word-spacing: 1px;
+        line-height: 40px;
+	font-family: arial;
+        font-size: 250%;
+	color: #FFFFFF;
+	padding-top: 25px;
+	width: 350px;
+	text-align: center;
+	float: left;
+	overflow: hidden;
+
+
+}
+.class_ser
+{
+        word-spacing: 1px;
+	text-align: center;
+        line-height: 20px;
+        font-size: 90%;
+        border: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+	padding: 10px;
+	height: 40px;
+	overflow: hidden;
+}
+/*Search Results*/
+.search_results
+{
+	
+        word-spacing: 1px;
+	text-align: left;
+        line-height: 20px;
+        font-size: 90%;
+        border: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+	padding: 10px;
+	overflow: hidden;
+
+}
+.user_comments
+{
+        word-spacing: 1px;
+	text-align: left;
+        line-height: 20px;
+        font-size: 90%;
+        border: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+	padding: 10px;
+	overflow: hidden;
+
+
+}
+
+.LRPanel
+{
+
+	width: 100%;
+	overflow: hidden;
+}
+.lpanel
+{
+        border-top: thin solid #CCCCCC;
+        border-bottom: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+	float: left;
+	width: 19.9999%;
+	overflow: hidden;
+}
+.rpanel
+{
+
+        border-top: thin solid #CCCCCC;
+        border-left: thin solid #CCCCCC;
+        border-bottom: thin solid #CCCCCC;
+        background-color: #FFFFFF;
+	float: right;
+	width: 80%;
+	overflow: hidden;
+}
