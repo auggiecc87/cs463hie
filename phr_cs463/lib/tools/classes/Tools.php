@@ -96,14 +96,14 @@ class Tools
    }
 
 	public static function InitMySQL() { 
-		global $link;
+		global $PHR_KEYSTORE;
 		global $dbname;
-		if (!$link) {
+		if (!$PHR_KEYSTORE) {
 		   echo 'Could not connect to MySQL';
 		   exit;
 		}
 
-		if (!mysql_select_db($dbname, $link)) {
+		if (!mysql_select_db($dbname, $PHR_KEYSTORE)) {
 		   echo 'Could not select database';
 		   exit;
 		}
@@ -116,8 +116,8 @@ class Tools
 	}	
 		
 	public static function Query($results) {
-		global $link;
-		$result = mysql_query($results, $link);
+		global $PHR_KEYSTORE;
+		$result = mysql_query($results, $PHR_KEYSTORE);
 
 		if (!$result) {
 		   echo "DB Error, could not query the database\n";

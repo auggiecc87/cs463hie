@@ -6,14 +6,18 @@
  */
          
 $mysql = "127.0.0.1:3307";
-$dbuname = "root";
-$password = 'cs463';
+$dbuname = "keystore_user";
+$password = 'keystore**';
 $dbname = "keystore";
 global $dbname;
 
-global $link;
-$link = mysql_connect($mysql, $dbuname, $password);    
+//global $link;
+//$link = mysql_connect($mysql, $dbuname, $password);    
 //$link = mysql_connect('127.0.0.1:3307', 'root', 'cs463');
+
+
+global $PHR_KEYSTORE;
+$PHR_KEYSTORE= mysql_connect($mysql, $dbuname, $password);    
 
 //global $allowregister;
 //$allowregister = "no"
