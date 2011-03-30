@@ -53,6 +53,7 @@ if($_SESSION['loggedin'] == 1)
     $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
     while($row = mysql_fetch_array($finalquery))
     {
+        //This only obtains encrypted values
         $Name  = $row['Name'];
         $Sex   = $row['Sex'];
         $DOB   = $row['DOB'];
@@ -61,8 +62,12 @@ if($_SESSION['loggedin'] == 1)
         $Treat = $row['Treatment'];
     }
 
+    //This key will help decrypt the data
     $key   = $_SESSION['key'];
+    //This is the type of cipher we are using
     $cipher_alg = MCRYPT_RIJNDAEL_128;
+
+
     //This is used to create a one time key
     /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
         MCRYPT_MODE_ECB), MCRYPT_RAND);*/
@@ -70,7 +75,16 @@ if($_SESSION['loggedin'] == 1)
     //echo "<p>".$iv;
 
     //Obtain IV that was generated
+    //
+
+    //The IV was generated once using a crypto hash
+    //it needs to be the same for all users
+    //or auto generated new for each user
     $iv = $_SESSION['iv'];
+
+    //the db doesn't like data store as binary
+    //so we stored it as hex now we need
+    //to turn it back to binary
     $iv = hex2bin($iv);
 
     /*$input = "text";
@@ -80,6 +94,12 @@ if($_SESSION['loggedin'] == 1)
      */
     
     //$encrypted_string = hex2bin($Name);
+    //
+    //
+
+
+
+    //Decrypt the Patient Data
     $Name = mcrypt_decrypt($cipher_alg, $key, 
         hex2bin($Name), MCRYPT_MODE_CBC, $iv);
     
