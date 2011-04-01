@@ -1,12 +1,12 @@
 <?php
-$phruname = $_POST['user'];
-$phrpwd   = $_POST['pwd'];
+$hispuname = $_POST['user'];
+$hisppwd   = $_POST['pwd'];
 
 
-//Authorize the PHR
+//Authorize the HISP
 //
 Tools::InitMysql();
-$login_query = "Select * FROM PHR_AUTH WHERE uname = '$phruname' 
+$login_query = "Select * FROM HISP_AUTH WHERE uname = '$hispuname' 
     AND active = '1'";
 
 
@@ -14,17 +14,18 @@ $login_results = Tools::Query($login_query);
 
 while($row = mysql_fetch_array($login_results))
 {
-    if(md5($phrpwd)==$row['passwd'])
+    if(md5($hisppwd)==$row['passwd'])
     {
         $_SESSION['session_pid_auth'] = $row['pid_auth'];
         $_SESSION['first_name']       = $row['fname'];
         $_SESSION['last_name']        = $row['lname'];
-        $_SESSION['PHR_ID']           = $row['PHR_ID'];
+        $_SESSION['HISP_ID']           = $row['HISP_ID'];
         $_SESSION['key']              = $row['decryptkey'];
         $_SESSION['dstore_uname']     = $row['dstore_uname'];
         $_SESSION['dstorepwd']        = $row['dstorepwd'];
         $_SESSION['loggedin']         = '1';
         $_SESSION['iv']               = $row['iv'];
+        $_SESSION['role']             = $row['hisp_type'];
 
     }else
     { 
@@ -47,9 +48,11 @@ if($_SESSION['loggedin'] == 1)
         echo "cant connect";
     }
 
+    $desire_pid = choose_pid($pid_auth);
 
     $encrypt_pid = $_SESSION['session_pid_auth'];
-    $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$encrypt_pid'";
+    $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$desired_pid'";
+    
     $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
     while($row = mysql_fetch_array($finalquery))
     {
@@ -146,6 +149,12 @@ if($_SESSION['loggedin'] == 1)
         return $bin;
     } 
 
+
+// function to choose the patient history to look at
+    function choose_pid($pid_list)
+    {
+        //list the pids and make user choose one
+    }
 
 ?>
 
