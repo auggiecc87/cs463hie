@@ -38,6 +38,10 @@ switch($display)
     include("$serverroot/mods/parser.php");
     break; 
 
+    case "fetchpatient";
+    include("$serverroot/mods/fetch_patient.php");
+    break; 
+
 Default;
 include("$serverroot/mods/main_page.php");
 
