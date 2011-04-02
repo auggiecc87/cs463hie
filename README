@@ -6,6 +6,18 @@ Brian Gladden - gladden1
 Rachel Redenour - rredeno2
 Steve Granda -  sgrand2
 
-We'll figure this stuff out.
+In order to run any of the queries you are going to need to run:
+ssh -f -L 3307:127.0.0.1:3306 cs463@lisa.acm.uiuc.edu sleep 60 >> logfile_cs463
 
-Yeah!
+to open a SSH tunnel to the datastore.
+
+Individual MySQL queries could be tested via:
+mysql -u root -p -h 127.0.0.1 -P 3307
+
+Then by pointing a webserver with PHP and MCRYPT for PHP loaded on it you can 
+use the web interface we have created.
+
+We have setup our machines by pointing Apache to the hisp_cs463 or phr_cs463 i
+directory depending on which view we wanted to test.
+
+

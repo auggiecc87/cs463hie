@@ -1,4 +1,22 @@
-This is a local webserver which will be run 
-on a seperate machine (The PHR) to access the mysql
-client (Data store over SSH/SSL)
+This is the web view for 
+Healthcare Professionals: This category of users consists of professionals 
+in the system. In this project we assume that there are two kinds of 
+professionals; doctors and nurses. They access the EHR database using a 
+Health Information Service Provider (HISP). You can assume that professionals 
+access the EHR data either using a web-based access or using standalone
+applications.
+
+Point apache to the dir hisp_cs463
+
+Then type into web browser localhost/index.php to get view.
+
+Must log in. Then can navigate:
+
+Patient Data:
+Select from the list of patients you have ability to acces.
+Then click submit to see the patient data.
+
+Health Care Provider Data:
+Shows your data including name, HISP type and the patients you can see.
+
 
