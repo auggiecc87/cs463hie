@@ -13,9 +13,9 @@ echo "<a href = './index.php?disp=about'>About</a>";
 if (($_SESSION['loggedin']) == 1)
 {
 	echo " | ";
-	echo "<a href= './index.php?disp=Data'> Patient Data</a>";
+	echo "<a href= './index.php?disp=pdata'> Patient Data</a>";
 	echo " | ";
-	echo "<a href= './index.php?disp=Data'> Health Care Provider Data</a>";
+	echo "<a href= './index.php?disp=hispdata'> Health Care Provider Data</a>";
 	echo " | ";
 	echo "<a href = './index.php?disp=logout'>Logout</a>";
 } 

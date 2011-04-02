@@ -25,12 +25,19 @@ switch($display)
     case "loginp";
     include("$serverroot/mods/parser.php");
     break; 
-    
+
     case "logout";
     include("$serverroot/mods/logout.php");
     break; 
 
-    
+    case "hispdata";
+    include("$serverroot/mods/hispdata.php");
+    break; 
+
+    case "pdata";
+    include("$serverroot/mods/parser.php");
+    break; 
+
 Default;
 include("$serverroot/mods/main_page.php");
 

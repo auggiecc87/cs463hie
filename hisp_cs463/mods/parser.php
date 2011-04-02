@@ -48,7 +48,7 @@ if($_SESSION['loggedin'] == 1)
         echo "cant connect";
     }
 
-    $desire_pid = choose_pid($pid_auth);
+    $desired_pid = choose_pid($_SESSION['session_pid_auth'] );
 
     $encrypt_pid = $_SESSION['session_pid_auth'];
     $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$desired_pid'";
@@ -152,9 +152,79 @@ if($_SESSION['loggedin'] == 1)
 
 // function to choose the patient history to look at
     function choose_pid($pid_list)
-    {
+    {   
         //list the pids and make user choose one
+        $token = strtok($pid_list, ",");
+
+        $tokened;
+        $patient_ind = 0;
+        while ($token != false)
+        {
+            $tokened[$patient_ind] = $token;
+            //echo $tokened[$patient_ind];
+            $patient_ind++;
+            //echo $token;
+            $token = strtok(",");
+        }
+        $patient_ind--;
+
+        echo"<form method='post' action='' >
+            Which patient? <br />";
+
+        while ($patient_ind >= 0)
+        {
+            $patient = parse_patient($tokened[$patient_ind]);
+            echo"
+                <input type='radio' name='uid' value='$tokened[$patient_ind]'>
+                $patient <br />";
+            $patient_ind--;
+        }
+        echo" <input type='submit' value='Submit'>
+            </form>";
+
+    return $_POST['uid'];
+    }
+
+    //function to get basic patient data for display
+    function parse_patient($patient_ind)
+    {
+        $datastore_server = "127.0.0.1:3307";
+        $datastoreuname = $_SESSION['dstore_uname'];
+        $datastorepass  = $_SESSION['dstorepwd'];
+        $PHR_DATASTORE = mysql_connect($datastore_server, $datastoreuname, 
+            $datastorepass);
+        $patient_dbname ="Health Records";
+        if(!mysql_select_db($patient_dbname, $PHR_DATASTORE))
+        {
+            echo "can't connect";
+        }
+
+        $encrypt_pid = $_SESSION['session_pid_auth'];
+        $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$patient_ind'";
+        
+        $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
+        while($row = mysql_fetch_array($finalquery))
+        {
+            $patient_name = $row['Name']; 
+            $SSN = $row['SSN'];
+        }
+
+        $key   = $_SESSION['key'];
+        $cipher_alg = MCRYPT_RIJNDAEL_128; 
+        $iv = $_SESSION['iv'];
+        $iv = hex2bin($iv);
+        //Decrypt the Patient Data
+        $patient_name = mcrypt_decrypt($cipher_alg, $key,
+            hex2bin($patient_name), MCRYPT_MODE_CBC, $iv);
+
+        $SSN = mcrypt_decrypt($cipher_alg, $key,
+            hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
+        
+        //obsure SSN
+        $repl = "XXX-XX-";
+        $SSN = substr_replace($SSN,$repl,0,7);
+
+        return $patient_name." ".$SSN;
     }
 
 ?>
-
