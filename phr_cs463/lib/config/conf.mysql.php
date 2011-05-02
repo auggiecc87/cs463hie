@@ -5,7 +5,7 @@
  * Also makes it easier to change them, should we ever have to. 
  */
          
-$mysql = "127.0.0.1:3307";
+$mysql = "127.0.0.1:3308";
 $dbuname = "keystore_user";
 $password = 'keystore**';
 $dbname = "keystore";
