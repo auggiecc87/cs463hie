@@ -1,6 +1,7 @@
 <?php
 $hispuname = $_POST['user'];
 $hisppwd   = $_POST['pwd'];
+$patient_pid = $_POST['uid'];
 
 
 //Authorize the HISP
@@ -42,23 +43,24 @@ if($_SESSION['loggedin'] == 1)
     $datastoreuname = $_SESSION['dstore_uname'];
     $datastorepass  = $_SESSION['dstorepwd'];
     $PHR_DATASTORE = mysql_connect($datastore_server, $datastoreuname, $datastorepass);
-    $datastore_dbname ="keystore";
+    $datastore_dbname ="Health Records";
     if(!mysql_select_db($datastore_dbname, $PHR_DATASTORE))
     {
         echo "cant connect";
     }
 
-    $encrypt_pid = $_SESSION['session_pid_auth'];
-    $HISP_QUERY = "SELECT * FROM HISP_AUTH WHERE HISP_ID = '$encrypt_pid'";
+    $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$patient_pid'";
     
-    $finalquery = mysql_query($HISP_QUERY, $PHR_DATASTORE);
+    $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
     while($row = mysql_fetch_array($finalquery))
     {
         //This only obtains encrypted values
-        $Name  = $row['fname'];
-        $Name = $Name." ".$row['lname'];
-        $Patients   = $row['pid_auth'];
-        $Type   = $row['hisp_type'];
+        $Name  = $row['Name'];
+        $Sex   = $row['Sex'];
+        $DOB   = $row['DOB'];
+        $SSN   = $row['SSN'];
+        $Diag  = $row['Diagnosis'];
+        $Treat = $row['Treatment'];
     }
 
     //This key will help decrypt the data
@@ -96,60 +98,38 @@ if($_SESSION['loggedin'] == 1)
     //
     //
 
-    // get and decrypt the patient data
-    $patient_data = "";
-    $token = strtok($Patients, ",");
-    while ($token != false)
-    {
-        $patient_dbname ="Health Records";
-        if(!mysql_select_db($patient_dbname, $PHR_DATASTORE))
-        {
-            echo "can't connect";
-        }
 
-        $encrypt_pid = $_SESSION['session_pid_auth'];
-        $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$token'";
 
-        $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
-        while($row = mysql_fetch_array($finalquery)) 
-        {
-            $patient_name = $row['Name'];
-            $SSN = $row['SSN'];
-        }
-        //Decrypt the Patient Data
-        $patient_name = mcrypt_decrypt($cipher_alg, $key,
-            hex2bin($patient_name), MCRYPT_MODE_CBC, $iv);
+    //Decrypt the Patient Data
+    $Name = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Name), MCRYPT_MODE_CBC, $iv);
+    
+    $Sex = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+    
+    $DOB = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+    
+    $SSN = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
+    
+    $Diag = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+    
+    $Treat = mcrypt_decrypt($cipher_alg, $key, 
+        hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
 
-        $SSN = mcrypt_decrypt($cipher_alg, $key,
-            hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
 
-        //obscure SSN
-        $repl = "XXX-XX-";
-        $SSN = substr_replace($SSN,$repl,0,7);
-
-        $patient_data .= "<br/>".$token." ".$patient_name." ".$SSN;
-        $token = strtok(",");
-    }
-
-    if ($Type == 1){
-        $type_name = "Doctor";
-    } else if ($Type == 2){
-        $type_name = "Nurse";
-    }
-
-    echo "<p align='left'>
-        <strong>HISP Name</strong>: $Name <br/>
-        <strong>HISP Type </strong>: $type_name <br/>
-        <strong>Patient ID's </strong>: $patient_data<br/>";
-
-    if ($Type == 1){
-        // TODO: allow delegation of rights
-    }
-
-    // TODO: allow editing of informatio
-    echo" <form method='post' action='/index.php?disp=editpatient' >
-        <input type='submit' value='Edit Patient Information'>
-        </form>";
+    echo " <form action= '' method='post'  class='edit'/>
+        <strong>Name</strong>: <input type = 'text' name='$newName' value="$Name"/> <br/>
+        <strong>Sex </strong>: $Sex<br/>
+        <strong>DOB </strong>: $DOB <br/>
+        <strong>SSN </strong>: $SSN <br/>
+        <strong>Diag</strong>: $Diag<br/>
+        <strong>Treat</strong>: $Treat <br/>
+        < input type='submit' valeu='Submit Changes' name='submit'/>
+        </form\>
+        ";
 
 }
 
@@ -169,6 +149,7 @@ if($_SESSION['loggedin'] == 1)
         }
         return $bin;
     } 
+
 
 
 ?>

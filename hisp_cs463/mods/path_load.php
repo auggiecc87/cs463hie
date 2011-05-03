@@ -42,6 +42,15 @@ switch($display)
     include("$serverroot/mods/fetch_patient.php");
     break; 
 
+    case "editpatient";
+    include("$serverroot/mods/edit_patient.php");
+    break;
+
+    case "newpatient";
+    include("$serverroot/mods/new_patient.php");
+    break;
+
+
 Default;
 include("$serverroot/mods/main_page.php");
 
