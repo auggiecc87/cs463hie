@@ -99,8 +99,11 @@ if($_SESSION['loggedin'] == 1)
                 $patient <br />";
             $ind++;
         }
-        echo" <input type='submit' value='Submit'>
-            </form>";
+        echo" <input type='submit' value='Submit'/>
+            </form/>";
+
+        echo" <form method='post' action='/index.php?disp=newpatient'>
+            <input type='submit' value='Add New Patient'</form/>";
 
     return $_POST['uid'];
     }
