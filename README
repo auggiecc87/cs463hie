@@ -20,4 +20,16 @@ use the web interface we have created.
 We have setup our machines by pointing Apache to the hisp_cs463 or phr_cs463 i
 directory depending on which view we wanted to test.
 
+--
+UPDATE:
+
+In Phase II we need to have seperate Keystore and Datastore
+to do so we need two seperate ssh tunnels which can be run as:
+
+bash keystore.bash
+bash phr_hisp_tunnel.bash
+
+Furthermore the keystore mysql database can only be accessed at
+128.174.73.21/myadmin only on the campus network (VPN/illinoisnet/ethernet)
+
 
