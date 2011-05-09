@@ -49,7 +49,7 @@ switch($ftype)
     echo "<p>Datastore IV</p>";
     echo "<input type = 'text' name ='iv' value='$dbiv' />";
     echo "<p>Account type 0=Patient 1=Researcher 2=Auditor</p>";
-    echo "<input type = 'text' name ='phr_type' />";
+    echo "<input type = 'text' name ='acc_type' />";
 
     echo "<p>This information adds the PHR records fake data</p>";
     echo "<p>Which Physician Can take care of patient (enter the ints)</p>";
@@ -73,6 +73,7 @@ switch($ftype)
     echo "<p>Treatment</p>";
     echo "<input type = 'text' name ='Treatment' value='Nothing' />";
 
+    echo "<input type = 'hidden' name = 'tsub' value ='0'>";
 
 
 
@@ -101,7 +102,9 @@ switch($ftype)
     echo "<p>Datastore IV</p>";
     echo "<input type = 'text' name ='iv' value='$dbiv' />";
     echo "<p>Account type 0=Doctor 1=Researcher 2=Auditor</p>";
-    echo "<input type = 'text' name ='hisp_type' />";
+    echo "<input type = 'text' name ='acct_type' />";
+    
+    echo "<input type = 'hidden' name = 'tsub' value ='1'>";
 
     break;
 
@@ -129,6 +132,7 @@ echo "</form>";
 
 if($submit ==1)
 {
+    $tsub= $_POST['tsub'];
 
     //connects to the  keystore
 
@@ -153,6 +157,98 @@ if($submit ==1)
     if(!mysql_select_db($datastore_db, $dstore))
     {
         echo "cant connect datastore";
+    }
+
+    switch($tsub)
+    {
+
+    case "0":
+        //first add stuff to the keystore
+        //then add the record to the database
+        echo "submitted?";
+        $puname         = $_POST['uname'];
+        $ppasswd        = md5($_POST['passwd']);
+        $pdecryptkey    = $_POST['decryptkey'];
+        $ppidauth       = $_POST['pidauth'];
+        $pfname         = $_POST['fname'];
+        $plname         = $_POST['lname'];
+        $pactive        = $_POST['active'];
+        $pdstore_uname  = $_POST['dstore_uname'];
+        $pdstorepwd     = $_POST['dstorepwd'];
+        $piv            = $_POST['iv'];
+        $pacct_type     = $_POST['acct_type'];
+
+        $user_query = "INSERT INTO `HISP_AUTH` (`uname`, `passwd`, `decryptkey`, `pidauth`, 
+            `fname`, `lname`, `active`, `dstore_uname`, `dstorepwd`, `iv`, `acct_type`)
+            VALUES('$puname', '$ppasswd', '$pdecryptkey', '$ppidauth', '$pfname', '$plname',
+                '$pactive', '$pdstore_uname','$pdstorepwd', '$piv', '$pacct_type')";
+
+        $presult = mysql_query($user_query,$kstore); 
+
+        if(!$presult)
+        {
+            echo "didn't work";
+            echo mysql_error();
+        }
+
+        break;
+
+    case "1":
+    echo "<p>Login Name</p>";
+    echo "<input type = 'text' name ='uname' />";
+    echo "<p>Password</p>";
+    echo "<input type = 'text' name ='passwd' value='password' />";
+    echo "<p>Decrypt Key</p>";
+    echo "<input type = 'text' name ='decryptkey' value='$dbdk' />";
+    echo "<p>Who can they treat (CSV)</p>";
+    echo "<input type = 'text' name ='pid_auth' />";
+    echo "<p>First Name</p>";
+    echo "<input type = 'text' name ='fname' />";
+    echo "<p>Last Name</p>";
+    echo "<input type = 'text' name ='lname' />";
+    echo "<p>Active</p>";
+    echo "<input type = 'text' name ='active' value='1' />";
+    echo "<p>Datastore Username</p>";
+    echo "<input type = 'text' name ='dstore_uname' value='$dbu' />";
+    echo "<p>Datastore Password</p>";
+    echo "<input type = 'text' name ='dstorepwd' value='$dbp' />";
+    echo "<p>Datastore IV</p>";
+    echo "<input type = 'text' name ='iv' value='$dbiv' />";
+    echo "<p>Account type 0=Doctor 1=Researcher 2=Auditor</p>";
+    echo "<input type = 'text' name ='acct_type' />";
+        $query = "SELECT * FROM HISP_AUTH";
+        $go = mysql_query($query, $kstore);
+            while($row=mysql_fetch_array($go))
+            {
+                $HISP_ID = $row['HISP_ID'];
+            }
+                $HISP_ID = $HISP_ID + 1;
+
+        $puname         = $_POST['uname'];
+        $ppasswd        = md5($_POST['passwd']);
+        $pdecryptkey    = $_POST['decryptkey'];
+        $ppidauth       = $_POST['pid_auth'];
+        $pfname         = $_POST['fname'];
+        $plname         = $_POST['lname'];
+        $pactive        = $_POST['active'];
+        $pdstore_uname  = $_POST['dstore_uname'];
+        $pdstorepwd     = $_POST['dstorepwd'];
+        $piv            = $_POST['iv'];
+        $pacct_type     = $_POST['acct_type'];
+
+
+        $query = "INSERT INTO `keystore`,`HISP_AUTH` (`HISP_ID`, `uname`, `passwd`, `decryptkey`, `pidauth`, 
+            `fname`, `lname`, `active`, `dstore_uname`, `dstorepwd`, `iv`, `acct_type`)
+            VALUES('$HISP_ID','$puname', '$ppasswd', '$pdecryptkey', '$ppidauth', '$pfname', '$plname','$pactive', '$pdstore_uname','$pdstorepwd', '$piv', '$pacct_type')";
+
+        $presult = mysql_query($query,$kstore); 
+
+        if(!$presult)
+        {
+            echo "didn't work ";
+            echo mysql_error();
+        }
+        break;
     }
 
 

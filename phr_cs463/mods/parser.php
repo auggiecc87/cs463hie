@@ -25,6 +25,7 @@ while($row = mysql_fetch_array($login_results))
         $_SESSION['dstorepwd']        = $row['dstorepwd'];
         $_SESSION['loggedin']         = '1';
         $_SESSION['iv']               = $row['iv'];
+        $_SESSION['acct_type']        = $row['acct_type'];
 
     }else
     { 
@@ -60,72 +61,414 @@ if($_SESSION['loggedin'] == 1)
         $SSN   = $row['SSN'];
         $Diag  = $row['Diagnosis'];
         $Treat = $row['Treatment'];
+        $act_type = $row['acct_type'];
     }
 
-    //This key will help decrypt the data
-    $key   = $_SESSION['key'];
-    //This is the type of cipher we are using
-    $cipher_alg = MCRYPT_RIJNDAEL_128;
+    if($_SESSION['acct_type'] == 1)
+    {
+        $ziepersonq = 0;
+        $encrypt_pid = $_SESSION['session_pid_auth'];
+        $EHR_QUERY = "SELECT * FROM Patient";
+        $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
+        while($row = mysql_fetch_array($finalquery))
+        {
+            //This only obtains encrypted values
+            $Name  = "Patient".$ziepersonq;
+            $Sex   = $row['Sex'];
+            $DOB   = $row['DOB'];
+            $SSN  = "XXX-XX-XXXX";
+            $Diag  = $row['Diagnosis'];
+            $Treat = $row['Treatment'];
+            $ziepersonq++;
+            //This key will help decrypt the data
+            $key   = $_SESSION['key'];
+            //This is the type of cipher we are using
+            $cipher_alg = MCRYPT_RIJNDAEL_128;
 
 
-    //This is used to create a one time key
+            //This is used to create a one time key
     /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
-        MCRYPT_MODE_ECB), MCRYPT_RAND);*/
-    //echo bin2hex($iv);
-    //echo "<p>".$iv;
+    MCRYPT_MODE_ECB), MCRYPT_RAND);*/
+            //echo bin2hex($iv);
+            //echo "<p>".$iv;
 
-    //Obtain IV that was generated
-    //
+            //Obtain IV that was generated
+            //
 
-    //The IV was generated once using a crypto hash
-    //it needs to be the same for all users
-    //or auto generated new for each user
-    $iv = $_SESSION['iv'];
+            //The IV was generated once using a crypto hash
+            //it needs to be the same for all users
+            //or auto generated new for each user
+            $iv = $_SESSION['iv'];
 
-    //the db doesn't like data store as binary
-    //so we stored it as hex now we need
-    //to turn it back to binary
-    $iv = hex2bin($iv);
+            //the db doesn't like data store as binary
+            //so we stored it as hex now we need
+            //to turn it back to binary
+            $iv = hex2bin($iv);
 
     /*$input = "text";
     $encrypted_string = mcrypt_encrypt($cipher_alg, $key, 
         $input, MCRYPT_MODE_CBC, $iv);
     echo "Encrypted string: ".bin2hex($encrypted_string)."<p>";
      */
-    
-    //$encrypted_string = hex2bin($Name);
-    //
-    //
+
+            //$encrypted_string = hex2bin($Name);
+            //
+            //
+
+            $Sex = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+
+            $DOB = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+
+
+            $Diag = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+
+            $Treat = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
+
+
+            echo "<p align='left'>
+                <strong>Name</strong>: $Name <br/>
+                <strong>Sex </strong>: $Sex<br/>
+                <strong>DOB </strong>: $DOB <br/>
+                <strong>SSN </strong>: $SSN <br/>
+                <strong>Diag</strong>: $Diag<br/>
+                <strong>Treat</strong>: $Treat <br/>";
+
+        }
+    }
+
+    if($_SESSION['acct_type'] == 0)
+    {
+
+        //This key will help decrypt the data
+        $key   = $_SESSION['key'];
+        //This is the type of cipher we are using
+        $cipher_alg = MCRYPT_RIJNDAEL_128;
+
+
+        //This is used to create a one time key
+    /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
+    MCRYPT_MODE_ECB), MCRYPT_RAND);*/
+        //echo bin2hex($iv);
+        //echo "<p>".$iv;
+
+        //Obtain IV that was generated
+        //
+
+        //The IV was generated once using a crypto hash
+        //it needs to be the same for all users
+        //or auto generated new for each user
+        $iv = $_SESSION['iv'];
+
+        //the db doesn't like data store as binary
+        //so we stored it as hex now we need
+        //to turn it back to binary
+        $iv = hex2bin($iv);
+
+    /*$input = "text";
+    $encrypted_string = mcrypt_encrypt($cipher_alg, $key, 
+        $input, MCRYPT_MODE_CBC, $iv);
+    echo "Encrypted string: ".bin2hex($encrypted_string)."<p>";
+     */
+
+        //$encrypted_string = hex2bin($Name);
+        //
+        //
 
 
 
-    //Decrypt the Patient Data
-    $Name = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Name), MCRYPT_MODE_CBC, $iv);
-    
-    $Sex = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
-    
-    $DOB = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
-    
-    $SSN = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
-    
-    $Diag = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
-    
-    $Treat = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
+        //Decrypt the Patient Data
+        $Name = mcrypt_decrypt($cipher_alg, $key, 
+            hex2bin($Name), MCRYPT_MODE_CBC, $iv);
+
+        $Sex = mcrypt_decrypt($cipher_alg, $key, 
+            hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+
+        $DOB = mcrypt_decrypt($cipher_alg, $key, 
+            hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+
+        $SSN = mcrypt_decrypt($cipher_alg, $key, 
+            hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
+
+        $Diag = mcrypt_decrypt($cipher_alg, $key, 
+            hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+
+        $Treat = mcrypt_decrypt($cipher_alg, $key, 
+            hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
 
 
-    echo "<p align='left'>
-        <strong>Name</strong>: $Name <br/>
-        <strong>Sex </strong>: $Sex<br/>
-        <strong>DOB </strong>: $DOB <br/>
-        <strong>SSN </strong>: $SSN <br/>
-        <strong>Diag</strong>: $Diag<br/>
-        <strong>Treat</strong>: $Treat <br/>";
+        echo "<p align='left'>
+            <strong>Name</strong>: $Name <br/>
+            <strong>Sex </strong>: $Sex<br/>
+            <strong>DOB </strong>: $DOB <br/>
+            <strong>SSN </strong>: $SSN <br/>
+            <strong>Diag</strong>: $Diag<br/>
+            <strong>Treat</strong>: $Treat <br/>";
+    }
+    if($_SESSION['acct_type'] == 3)
+    {
+        $ziepersonq = 0;
+        $encrypt_pid = $_SESSION['session_pid_auth'];
+        $EHR_QUERY = "SELECT * FROM Patient";
+        $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
+        while($row = mysql_fetch_array($finalquery))
+        {
+            //This only obtains encrypted values
+            $Name   = $row['Name'];
+            $Sex   = $row['Sex'];
+            $DOB   = $row['DOB'];
+            $SSN   = $row['SSN'];
+            $Diag  = $row['Diagnosis'];
+            $Treat = $row['Treatment'];
+            $ziepersonq++;
+            //This key will help decrypt the data
+            $key   = $_SESSION['key'];
+            //This is the type of cipher we are using
+            $cipher_alg = MCRYPT_RIJNDAEL_128;
+
+
+            //This is used to create a one time key
+    /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
+    MCRYPT_MODE_ECB), MCRYPT_RAND);*/
+            //echo bin2hex($iv);
+            //echo "<p>".$iv;
+
+            //Obtain IV that was generated
+            //
+
+            //The IV was generated once using a crypto hash
+            //it needs to be the same for all users
+            //or auto generated new for each user
+            $iv = $_SESSION['iv'];
+
+            //the db doesn't like data store as binary
+            //so we stored it as hex now we need
+            //to turn it back to binary
+            $iv = hex2bin($iv);
+
+    /*$input = "text";
+    $encrypted_string = mcrypt_encrypt($cipher_alg, $key, 
+        $input, MCRYPT_MODE_CBC, $iv);
+    echo "Encrypted string: ".bin2hex($encrypted_string)."<p>";
+     */
+
+            //$encrypted_string = hex2bin($Name);
+            //
+            //
+            $Name = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Name), MCRYPT_MODE_CBC, $iv);
+
+            $Sex = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+            
+            $SSN = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
+
+            $DOB = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+
+
+            $Diag = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+
+            $Treat = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
+
+
+            echo "<p align='left'>
+                <strong>Name</strong>: $Name <br/>
+                <strong>Sex </strong>: $Sex<br/>
+                <strong>DOB </strong>: $DOB <br/>
+                <strong>SSN </strong>: $SSN <br/>
+                <strong>Diag</strong>: $Diag<br/>
+                <strong>Treat</strong>: $Treat <br/>";
+
+        }
+    }
+    if($_SESSION['acct_type'] == 4)
+    {
+        $ziepersonq = 0;
+        $encrypt_pid = $_SESSION['session_pid_auth'];
+        $EHR_QUERY = "SELECT * FROM Patient";
+        $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
+        while($row = mysql_fetch_array($finalquery))
+        {
+            //This only obtains encrypted values
+            $Name   = 0;
+            $Sex   = $row['Sex'];
+            $DOB   = $row['DOB'];
+            $SSN   = 0;
+            $Diag  = $row['Diagnosis'];
+            $Treat = 0;
+            $ziepersonq++;
+            //This key will help decrypt the data
+            $key   = $_SESSION['key'];
+            //This is the type of cipher we are using
+            $cipher_alg = MCRYPT_RIJNDAEL_128;
+
+
+            //This is used to create a one time key
+    /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
+    MCRYPT_MODE_ECB), MCRYPT_RAND);*/
+            //echo bin2hex($iv);
+            //echo "<p>".$iv;
+
+            //Obtain IV that was generated
+            //
+
+            //The IV was generated once using a crypto hash
+            //it needs to be the same for all users
+            //or auto generated new for each user
+            $iv = $_SESSION['iv'];
+
+            //the db doesn't like data store as binary
+            //so we stored it as hex now we need
+            //to turn it back to binary
+            $iv = hex2bin($iv);
+
+    /*$input = "text";
+    $encrypted_string = mcrypt_encrypt($cipher_alg, $key, 
+        $input, MCRYPT_MODE_CBC, $iv);
+    echo "Encrypted string: ".bin2hex($encrypted_string)."<p>";
+     */
+
+            //$encrypted_string = hex2bin($Name);
+            //
+            //
+            $Name = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Name), MCRYPT_MODE_CBC, $iv);
+
+            $Sex = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+
+            $DOB = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+
+
+            $Diag = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+
+            $Treat = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
+
+
+            echo "<p align='left'>
+                <strong>Name</strong>: $Name <br/>
+                <strong>Sex </strong>: $Sex<br/>
+                <strong>DOB </strong>: $DOB <br/>
+                <strong>SSN </strong>: $SSN <br/>
+                <strong>Diag</strong>: $Diag<br/>
+                <strong>Treat</strong>: $Treat <br/>";
+
+        }
+    }
+
+
+    if($_SESSION['acct_type'] == 2)
+    {
+        $ziepersonq = 0;
+        $encrypt_pid = $_SESSION['session_pid_auth'];
+        $EHR_QUERY = "SELECT * FROM Patient";
+        $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
+        while($row = mysql_fetch_array($finalquery))
+        {
+            //This only obtains encrypted values
+            $Name   = $row['Name'];
+            $Sex   = $row['Sex'];
+            $DOB   = $row['DOB'];
+            $SSN   = $row['SSN'];
+            $Diag  = $row['Diagnosis'];
+            $Treat = $row['Treatment'];
+            $ziepersonq++;
+            //This key will help decrypt the data
+            $key   = $_SESSION['key'];
+            //This is the type of cipher we are using
+            $cipher_alg = MCRYPT_RIJNDAEL_128;
+
+
+            //This is used to create a one time key
+    /*$iv = mcrypt_create_iv(mcrypt_get_iv_size($cipher_alg, 
+    MCRYPT_MODE_ECB), MCRYPT_RAND);*/
+            //echo bin2hex($iv);
+            //echo "<p>".$iv;
+
+            //Obtain IV that was generated
+            //
+
+            //The IV was generated once using a crypto hash
+            //it needs to be the same for all users
+            //or auto generated new for each user
+            $iv = $_SESSION['iv'];
+
+            //the db doesn't like data store as binary
+            //so we stored it as hex now we need
+            //to turn it back to binary
+            $iv = hex2bin($iv);
+
+    /*$input = "text";
+    $encrypted_string = mcrypt_encrypt($cipher_alg, $key, 
+        $input, MCRYPT_MODE_CBC, $iv);
+    echo "Encrypted string: ".bin2hex($encrypted_string)."<p>";
+     */
+
+            //$encrypted_string = hex2bin($Name);
+            //
+            //
+            $Name = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Name), MCRYPT_MODE_CBC, $iv);
+
+            $Sex = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
+            
+            $SSN = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
+
+            $DOB = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
+
+
+            $Diag = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
+
+            $Treat = mcrypt_decrypt($cipher_alg, $key, 
+                hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
+
+
+            echo "<p align='left'>
+                <strong>Name</strong>: $Name <br/>
+                <strong>Sex </strong>: $Sex<br/>
+                <strong>DOB </strong>: $DOB <br/>";
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 
