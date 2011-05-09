@@ -128,6 +128,18 @@ if($_SESSION['loggedin'] == 1)
         <strong>Diag</strong>: $Diag<br/>
         <strong>Treat</strong>: $Treat <br/>";
 
+    echo"<form method='post' action='/index.php?disp=editpatient'>
+        <input type='hidden' name='pid' value='$patient_pid' >
+        <input type='submit' value='Edit Patient'/></form/>
+        ";
+
+    if ($_SESSION['role'] == 1){
+        echo"<form method='post' action='/index.php?disp=allow'>
+        <input type='hidden' name='pid' value='$patient_pid'>
+        <input type='submit' value='Delegate'/></form/>";
+    }
+
+    return $_POST['pid'];
 }
 
 
@@ -150,3 +162,4 @@ if($_SESSION['loggedin'] == 1)
 
 
 ?>
+

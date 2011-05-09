@@ -59,6 +59,7 @@ if($_SESSION['loggedin'] == 1)
         $Name = $Name." ".$row['lname'];
         $Patients   = $row['pid_auth'];
         $Type   = $row['hisp_type'];
+        $acct_type = $row['acct_type'];
     }
 
     //This key will help decrypt the data
@@ -137,20 +138,23 @@ if($_SESSION['loggedin'] == 1)
         $type_name = "Nurse";
     }
 
-    echo "<p align='left'>
+
+    if($acct_type == 0) {
+        echo "<p align='left'>
         <strong>HISP Name</strong>: $Name <br/>
         <strong>HISP Type </strong>: $type_name <br/>
         <strong>Patient ID's </strong>: $patient_data<br/>";
-
-    if ($Type == 1){
-        // TODO: allow delegation of rights
+    } else if ($acct_type ==1) { //Researcher
+        echo "<p align='left'>
+        <strong>HISP Name</strong>: $Name <br/>
+        <strong>HISP Type </strong>: $type_name <br/>
+        <strong>Patient ID's </strong>: $patient_data<br/>";
+    } else if ($acct_type ==2){
+        echo "<p align='left'> 
+        <strong>HISP Name</strong>: $Name <br/>
+        <strong>HISP Type </strong>: $type_name <br/>
+        <strong>Patient ID's </strong>: $patient_data<br/>";
     }
-
-    // TODO: allow editing of informatio
-    echo" <form method='post' action='/index.php?disp=editpatient' >
-        <input type='submit' value='Edit Patient Information'>
-        </form>";
-
 }
 
 

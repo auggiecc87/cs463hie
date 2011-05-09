@@ -49,20 +49,6 @@ if($_SESSION['loggedin'] == 1)
         echo "cant connect";
     }
 
-    $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$patient_pid'";
-    
-    $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
-    while($row = mysql_fetch_array($finalquery))
-    {
-        //This only obtains encrypted values
-        $Name  = $row['Name'];
-        $Sex   = $row['Sex'];
-        $DOB   = $row['DOB'];
-        $SSN   = $row['SSN'];
-        $Diag  = $row['Diagnosis'];
-        $Treat = $row['Treatment'];
-    }
-
     //This key will help decrypt the data
     $key   = $_SESSION['key'];
     //This is the type of cipher we are using
@@ -100,37 +86,20 @@ if($_SESSION['loggedin'] == 1)
 
 
 
-    //Decrypt the Patient Data
-    $Name = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Name), MCRYPT_MODE_CBC, $iv);
-    
-    $Sex = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Sex), MCRYPT_MODE_CBC, $iv);
-    
-    $DOB = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($DOB), MCRYPT_MODE_CBC, $iv);
-    
-    $SSN = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($SSN), MCRYPT_MODE_CBC, $iv);
-    
-    $Diag = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Diag), MCRYPT_MODE_CBC, $iv);
-    
-    $Treat = mcrypt_decrypt($cipher_alg, $key, 
-        hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
-
-
-    echo " <form action= '' method='post'  class='edit'/>
-        <strong>Name</strong>: <input type = 'text' name='$newName' value="$Name"/> <br/>
-        <strong>Sex </strong>: $Sex<br/>
-        <strong>DOB </strong>: $DOB <br/>
-        <strong>SSN </strong>: $SSN <br/>
-        <strong>Diag</strong>: $Diag<br/>
-        <strong>Treat</strong>: $Treat <br/>
-        < input type='submit' valeu='Submit Changes' name='submit'/>
-        </form\>
+    echo " <form method='post' action='/index.php?disp=newpatient' />
+        <strong>Name</strong>: <input type='text' name='$Name' value=''/> <br/>
+        <strong>Sex </strong>: <input type='text' name='$Sex' value=''/><br/>
+        <strong>DOB </strong>: <input type='text' name='$DOB' value=''/><br/>
+        <strong>SSN </strong>: <input type='text' name-'$SSN' value=''/><br/>
+        <strong>Diag</strong>: <input type='text' name='$diag' value=''/><br/>
+        <strong>Treat</strong>: <input type='text' name='$treat' value=''/><br/>
+        <input type='submit' name='submit' value='Submit New Patient'/>
+        </form/>
         ";
 
+
+    // TODO: add these values to database
+    // include authorized as current doctor
 }
 
 
