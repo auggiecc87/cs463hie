@@ -1,4 +1,5 @@
 <?php
+echo"reached";
 $hispuname = $_POST['user'];
 $hisppwd   = $_POST['pwd'];
 $patient_pid = $_POST['pid'];
@@ -9,7 +10,6 @@ $patient_pid = $_POST['pid'];
 Tools::InitMysql();
 $login_query = "Select * FROM HISP_AUTH WHERE uname = '$hispuname' 
     AND active = '1'";
-
 
 $login_results = Tools::Query($login_query);
 
@@ -49,7 +49,6 @@ if($_SESSION['loggedin'] == 1)
         echo "cant connect";
     }
 
-    $encrypt_pid = $_SESSION['session_pid_auth'];
     $EHR_QUERY = "SELECT * FROM Patient WHERE Patient_ID = '$patient_pid'";
     
     $finalquery = mysql_query($EHR_QUERY, $PHR_DATASTORE);
@@ -120,32 +119,21 @@ if($_SESSION['loggedin'] == 1)
     $Treat = mcrypt_decrypt($cipher_alg, $key, 
         hex2bin($Treat), MCRYPT_MODE_CBC, $iv);
 
+    echo "<p align='left'>
+        <strong>Name</strong>: $Name <br/>
+        <strong>Sex </strong>: $Sex<br/>
+        <strong>DOB </strong>: $DOB <br/>
+        <strong>SSN </strong>: $SSN <br/>
+        <strong>Diag</strong>: $Diag<br/>
+        <strong>Treat</strong>: $Treat <br/>
 
-    $Name=chop($Name);
-    $Sex=chop($Sex);
-    $DOB=chop($DOB);
-    $SSN=chop($SSN);
-    $Diag=chop($Diag);
-    $Treat=chop($Treat);
-
-    echo "
-        <form method='post' action='/index.php?disp=fetchpatient'>
-        <strong>Name</strong>: <input type='text' name='$newName' value='$Name'/> <br/>
-        <strong>Sex </strong>: <input type='text' name='$newSex' value='$Sex'/><br/>
-        <strong>DOB </strong>: <input type='text' name='$newDOB' value='$DOB'/> <br/>
-        <strong>SSN </strong>: <input type='text' name='$newSSN' value='$SSN'/><br/>
-        <strong>Diag</strong>: <input type='text' name='$newDiag' value='$Diag'/><br/>
-        <strong>Treat</strong>: <input type='text' name='$newTreat' value='$Treat'/><br/>
-        <input type='submit' value='Submit Changes' name='submit'/>
-        <input type='hidden' name='uid' value='$patient_pid'>
-        </form/>
+        <form method ='post' action='/index.php?disp=fetchpatient'>
+        <input type='text' value='' name='newhisp'>
+        <input type='submit' value='Submit'> </form/>
         ";
+    
 
-    if ($newDiat != $Diag || $newTreat != $Treat || $newName != $Name || 
-        $newSex != $Sex || $newDOB != $DOB || $newSSN != $SSN) {
-            // TODO: update information
-        }
-    return $_POST['uid'];
+    return $_POST['pid'];
 }
 
 
@@ -165,4 +153,7 @@ if($_SESSION['loggedin'] == 1)
         return $bin;
     } 
 
+
+
 ?>
+

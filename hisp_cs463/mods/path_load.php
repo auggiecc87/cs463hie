@@ -50,6 +50,9 @@ switch($display)
     include("$serverroot/mods/new_patient.php");
     break;
 
+    case "allow";
+    include("serverroot/mods/allow_update.php");
+    break;
 
 Default;
 include("$serverroot/mods/main_page.php");

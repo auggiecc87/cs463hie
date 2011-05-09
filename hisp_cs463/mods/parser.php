@@ -103,7 +103,7 @@ if($_SESSION['loggedin'] == 1)
             </form/>";
 
         echo" <form method='post' action='/index.php?disp=newpatient'>
-            <input type='submit' value='Add New Patient'</form/>";
+            <input type='submit' value='Add New Patient'/></form/>";
 
     return $_POST['uid'];
     }
