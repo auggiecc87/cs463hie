@@ -126,7 +126,7 @@ if($_SESSION['loggedin'] == 1)
     $DOB=chop($DOB);
     $SSN=chop($SSN);
     $Diag=chop($Diag);
-    $Trest=chop($Treat);
+    $Treat=chop($Treat);
 
     echo "
         <form method='post' action='/index.php?disp=fetchpatient'>

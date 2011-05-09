@@ -20,13 +20,13 @@ while($row = mysql_fetch_array($login_results))
         $_SESSION['session_pid_auth'] = $row['pid_auth'];
         $_SESSION['first_name']       = $row['fname'];
         $_SESSION['last_name']        = $row['lname'];
-        $_SESSION['HISP_ID']           = $row['HISP_ID'];
+        $_SESSION['HISP_ID']          = $row['HISP_ID'];
         $_SESSION['key']              = $row['decryptkey'];
         $_SESSION['dstore_uname']     = $row['dstore_uname'];
         $_SESSION['dstorepwd']        = $row['dstorepwd'];
         $_SESSION['loggedin']         = '1';
         $_SESSION['iv']               = $row['iv'];
-        $_SESSION['role']             = $row['hisp_type'];
+        $_SESSION['acct_type']        = $row['acct_type'];
 
     }else
     { 
@@ -126,14 +126,15 @@ if($_SESSION['loggedin'] == 1)
         <strong>DOB </strong>: $DOB <br/>
         <strong>SSN </strong>: $SSN <br/>
         <strong>Diag</strong>: $Diag<br/>
-        <strong>Treat</strong>: $Treat <br/>";
+        <strong>Treat</strong>: $Treat <br/>
+        ";
 
     echo"<form method='post' action='/index.php?disp=editpatient'>
         <input type='hidden' name='pid' value='$patient_pid' >
         <input type='submit' value='Edit Patient'/></form/>
         ";
 
-    if ($_SESSION['role'] == 1){
+    if ($_SESSION['acct_type'] == 0){
         echo"<form method='post' action='/index.php?disp=allow'>
         <input type='hidden' name='pid' value='$patient_pid'>
         <input type='submit' value='Delegate'/></form/>";
